@@ -34,12 +34,7 @@ def rename_FBREF_columns(df):
     return df
 
 def calculate_saving_ability_score(df,season):
-    '''
-    
-    + ((df['Penalty Kicks_PKsv']-min_penalty_sv)*0.5/(max_penalty_sv-min_penalty_sv)+ df['Penalty Kicks_PKsv']/df['Penalty Kicks_PKatt']*0.5 )*0.1
-    '''
     min_psxg, max_psxg = df['Expected_PSxG+/-'].min(),df['Expected_PSxG+/-'].max()
-    #min_penalty_sv, max_penalty_sv = df['Penalty Kicks_PKsv'].min(),df['Penalty Kicks_PKsv'].max()
 
     df["psxg_score"] = 0
     df.loc[df['Expected_PSxG+/-']>0,"psxg_score"] = df['Expected_PSxG+/-']*0.7/max_psxg + 0.3
@@ -47,8 +42,6 @@ def calculate_saving_ability_score(df,season):
 
     df['saving_ability_score_'+ season] = df['Performance_CS%']/100 * 0.3 
     +(df['Performance_Save%']*0.5/100 +  df["psxg_score"]*0.5) * 0.7
-
-    #df['saving_ability_score_'+ season] = df['saving_ability_score_'+ season] * df['Comp_Score'] /100
 
     min_saving_score, max_saving_score = df['saving_ability_score_'+ season].min(),df['saving_ability_score_'+ season].max() 
      
@@ -62,7 +55,6 @@ def calculate_distribution_score(df, season):
     df['Distribution_Score_' + season] = df['Launched_Cmp%']* 0.5/100+\
                                         (df['Goal Kicks_Launch%'] * 0.5/100 + (df['Goal Kicks_AvgLen']-min_avg_len)*0.5/(max_avg_len-min_avg_len)) * 0.5
                                         
-    #df['Distribution_Score_' + season] = df['Distribution_Score_'+ season] * df['Comp_Score'] /100
     min_dist_score, max_dist_score = df['Distribution_Score_' + season].min(),df['Distribution_Score_' + season].max() 
     df['Distribution_Score_' + season] = ((df['Distribution_Score_' + season]-min_dist_score)/(max_dist_score-min_dist_score)) *60+35 
 
@@ -178,16 +170,16 @@ def prepare_one_season_FBREF_data(season):
 def prepare_one_season_FIFA_data(season):
     fifa_ds = pd.read_csv('../data/FIFA_DS/players_'+season+'.csv')
     gk_fifa_ds = fifa_ds[fifa_ds['player_positions']=="GK"]
-    relevant_leagues = ['Spain Primera Division', 'German 1. Bundesliga','English Premier League', 'French Ligue 1', 'Italian Serie A']
+    #relevant_leagues = ['Spain Primera Division', 'German 1. Bundesliga','English Premier League', 'French Ligue 1', 'Italian Serie A']
     #gk_fifa_ds = gk_fifa_ds[gk_fifa_ds['league_name'].isin(relevant_leagues)]
     
-    gk_fifa_ds['league_name'].replace('Spain Primera Division','es La Liga',inplace=True)
-    gk_fifa_ds['league_name'].replace('German 1. Bundesliga','de Bundesliga',inplace=True)
-    gk_fifa_ds['league_name'].replace('English Premier League','eng Premier League',inplace=True)
-    gk_fifa_ds['league_name'].replace('French Ligue 1','fr Ligue 1',inplace=True)
-    gk_fifa_ds['league_name'].replace('Italian Serie A','it Serie A',inplace=True)
+    # gk_fifa_ds['league_name'].replace('Spain Primera Division','es La Liga',inplace=True)
+    # gk_fifa_ds['league_name'].replace('German 1. Bundesliga','de Bundesliga',inplace=True)
+    # gk_fifa_ds['league_name'].replace('English Premier League','eng Premier League',inplace=True)
+    # gk_fifa_ds['league_name'].replace('French Ligue 1','fr Ligue 1',inplace=True)
+    # gk_fifa_ds['league_name'].replace('Italian Serie A','it Serie A',inplace=True)
 
-    print(gk_fifa_ds['league_name'].unique())
+    #print(gk_fifa_ds['league_name'].unique())
     
     fifa_gk_columns = ['long_name','player_positions','overall', 'potential', 'value_eur', 'wage_eur',\
                    'club_name','age','dob','height_cm','weight_kg','league_name',\
